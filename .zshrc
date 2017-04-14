@@ -1,3 +1,11 @@
+# $ZDOTDIR/.zshrc
+
+## /etc/zshenv ##
+# if [[ -d "$HOME"/.zsh.d ]]
+# then
+#     ZDOTDIR="$HOME"/.zsh.d/
+# fi
+
 ##日本語
 export LANG=ja_JP.UTF-8 #UTF-8
 setopt print_eight_bit  #ファイル名
@@ -20,7 +28,7 @@ function chpwd() {ls} #cdしたらls
 setopt auto_pushd                  #cdでpushd
 
 ##ヒストリ
-HISTFILE=~/.zsh_history
+HISTFILE=$ZDOTDIR/zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt hist_ignore_dups   #直前のダブりは省く
