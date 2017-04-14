@@ -36,8 +36,10 @@
       scroll-margin 1
       next-screen-context-lines 1)
 
+;; その他
 (electric-pair-mode 1)
 (setq kill-whole-line t)
 (setq require-final-newline t)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
