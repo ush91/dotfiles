@@ -24,12 +24,19 @@
                    c-auto-new-line t
                    c-hungry-delete-key t)))
 
-;; 表示
+;; テーマ
 (load-theme 'deeper-blue t)
+(set-face-attribute 'show-paren-match-face nil
+                    :background "#400000")
+
+;; 表示
 (tool-bar-mode 0)
 (line-number-mode t)
 (column-number-mode t)
 (global-linum-mode t)
+(electric-pair-mode 1)
+(show-paren-mode t)
+(setq show-paren-style 'expression)
 
 ;; スクロール
 (setq scroll-conservatively 1
@@ -37,7 +44,6 @@
       next-screen-context-lines 1)
 
 ;; その他
-(electric-pair-mode 1)
 (setq kill-whole-line t)
 (setq require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
