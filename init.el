@@ -53,7 +53,11 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
-(setq x-select-enable-clipboard nil)
+
+;; clipboard
+(setq x-select-enable-clipboard t)
+(setq mouse-drag-copy-region t)
+(delete-selection-mode t)
 
 ;; packages
 (custom-set-variables
