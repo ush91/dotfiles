@@ -1,3 +1,7 @@
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+
 (require 'cl)
 ;; 環境
 (set-language-environment "Japanese")
@@ -26,7 +30,7 @@
 
 ;; テーマ
 (load-theme 'deeper-blue t)
-(set-face-attribute 'show-paren-match-face nil
+(set-face-attribute 'show-paren-match nil
                     :background "#400000")
 
 ;; 表示
@@ -49,3 +53,37 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
+(setq x-select-enable-clipboard nil)
+
+;; packages
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(irony-additional-clang-options (quote ("-std=c++11")))
+ '(package-selected-packages (quote (company-irony company irony yasnippet))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(with-eval-after-load "yasnippet"
+  (define-key yas-keymap (kbd "<tab>") nil)
+  (yas-global-mode 1))
+
+(require 'company)
+
+(with-eval-after-load 'company
+  (global-company-mode 1)
+  (global-set-key (kbd "C-M-i") 'company-complete)
+  (add-to-list 'company-backends 'company-irony)
+  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
+
+(with-eval-after-load 'irony
+  (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  (add-hook 'c-mode-common-hook 'irony-mode))
