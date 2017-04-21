@@ -55,9 +55,9 @@
 (setq ring-bell-function 'ignore)
 
 ;; clipboard
-(setq x-select-enable-clipboard t)
-(setq mouse-drag-copy-region t)
-(delete-selection-mode t)
+;(setq x-select-enable-clipboard t)
+;(setq mouse-drag-copy-region t)
+;(delete-selection-mode t)
 
 ;; packages
 (custom-set-variables
@@ -66,7 +66,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(irony-additional-clang-options (quote ("-std=c++11")))
- '(package-selected-packages (quote (company-irony company irony yasnippet))))
+ '(package-selected-packages (quote (simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -91,3 +91,5 @@
   (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
   (add-hook 'c-mode-common-hook 'irony-mode))
+
+(simpleclip-mode 1)
