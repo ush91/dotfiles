@@ -10,6 +10,9 @@
 (set-face-attribute 'default nil
                     :family "Menlo"
                     :height 120)
+(setq initial-frame-alist
+      '((top . 0)
+        (height . 50)))
 
 ;; 自動生成ファイル
 (setq backup-directory-alist '(("." . "~/.emacs.d/tmp")))
@@ -27,6 +30,10 @@
                    tab-width 4
                    c-auto-new-line t
                    c-hungry-delete-key t)))
+(global-set-key "\C-a" '(lambda ()
+                          (interactive)
+                          (if (bolp)
+                              (back-to-indentation) (beginning-of-line))))
 
 ;; テーマ
 (load-theme 'deeper-blue t)
@@ -84,7 +91,7 @@
   (global-company-mode 1)
   (global-set-key (kbd "C-M-i") 'company-complete)
   (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
+;  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
 
 (with-eval-after-load 'irony
