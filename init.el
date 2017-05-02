@@ -73,7 +73,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(irony-additional-clang-options (quote ("-std=c++11")))
- '(package-selected-packages (quote (simpleclip company-irony company irony yasnippet))))
+ '(package-selected-packages
+   (quote
+    (company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -91,12 +93,20 @@
   (global-company-mode 1)
   (global-set-key (kbd "C-M-i") 'company-complete)
   (add-to-list 'company-backends 'company-irony)
-;  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
+  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection))
 
 (with-eval-after-load 'irony
   (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  (add-hook 'c-mode-common-hook 'irony-mode))
+  (add-hook 'irony-mode-hook
+            '(lambda ()
+               (interactive)
+               (define-key irony-mode-map [remap completion-at-point]
+                 'irony-completion-at-point-async)
+               (define-key irony-mode-map [remap complete-symbol]
+                 'irony-completion-at-point-async)))
+  (add-hook 'c-mode-common-hook 'irony-mode)
+  (setq company-idle-delay 0.0))
 
 (simpleclip-mode 1)
