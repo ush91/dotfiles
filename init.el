@@ -12,7 +12,8 @@
                     :height 120)
 (setq initial-frame-alist
       '((top . 0)
-        (height . 50)))
+        (height . 50)
+        (left . 845)))
 
 ;; 自動生成ファイル
 (setq backup-directory-alist '(("." . "~/.emacs.d/tmp")))
@@ -25,7 +26,7 @@
 (setq-default tab-width 4)
 (add-hook 'c-mode-common-hook
           '(lambda ()
-             (setq indent-tabs-mode t
+             (setq ;indent-tabs-mode t
                    c-basic-offset 4
                    tab-width 4
                    c-auto-new-line t
@@ -75,7 +76,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -83,12 +84,14 @@
  ;; If there is more than one, they won't work right.
  )
 
-(with-eval-after-load "yasnippet"
+;(require 'yasnippet)
+(with-eval-after-load 'yasnippet
   (define-key yas-keymap (kbd "<tab>") nil)
-  (yas-global-mode 1))
+;  (add-hook 'c++-mode-hook '(yas-global-mode 1))
+  )
+(yas-global-mode 1)
 
 (require 'company)
-
 (with-eval-after-load 'company
   (global-company-mode 1)
   (global-set-key (kbd "C-M-i") 'company-complete)
@@ -110,3 +113,11 @@
   (setq company-idle-delay 0.0))
 
 (simpleclip-mode 1)
+
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+(setq dashboard-items '((recents . 10)
+                        (bookmarks . 5)))
+
+;(require 'popwin)
+;(setq display-buffer-function 'popwin:display-buffer)
