@@ -114,10 +114,10 @@
 
 (simpleclip-mode 1)
 
-(require 'dashboard)
-(dashboard-setup-startup-hook)
-(setq dashboard-items '((recents . 10)
-                        (bookmarks . 5)))
+;; (require 'dashboard)
+;; (dashboard-setup-startup-hook)
+;; (setq dashboard-items '((recents . 10)
+;;                         (bookmarks . 5)))
 
 ;(require 'popwin)
 ;(setq display-buffer-function 'popwin:display-buffer)
