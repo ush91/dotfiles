@@ -11,9 +11,11 @@
                     :family "Menlo"
                     :height 120)
 (setq initial-frame-alist
-      '((top . 0)
+      '((top . 23)
+        (left . 775)
         (height . 50)
-        (left . 845)))
+        (width . 90)))
+; (frame-parameters (selected-frame))
 
 ;; 自動生成ファイル
 (setq backup-directory-alist '(("." . "~/.emacs.d/tmp")))
@@ -76,7 +78,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (tabbar dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
