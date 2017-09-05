@@ -57,6 +57,13 @@
       scroll-margin 1
       next-screen-context-lines 1)
 
+;; recentf
+(setq recentf-max-saved-items 1000)
+(setq recentf-auto-cleanup 'never)
+(setq recentf-auto-cleanup-timer
+      (run-with-idle-timer 30 t 'recentf-save-list))
+(recentf-mode 1)
+
 ;; その他
 (setq kill-whole-line t)
 (setq require-final-newline t)
