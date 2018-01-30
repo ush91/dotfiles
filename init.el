@@ -85,7 +85,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (exec-path-from-shell deferred company-jedi tabbar dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -130,13 +130,14 @@
 
 (simpleclip-mode 1)
 
+(setq shackle-rules
+      '(("*compilation*" :frame t)))
+(shackle-mode 1)
+
 ;; (require 'dashboard)
 ;; (dashboard-setup-startup-hook)
 ;; (setq dashboard-items '((recents . 10)
 ;;                         (bookmarks . 5)))
-
-;(require 'popwin)
-;(setq display-buffer-function 'popwin:display-buffer)
 
 
 ;; C/C++
