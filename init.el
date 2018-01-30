@@ -155,6 +155,15 @@
              (setq scheme-program-name "gosh -i")))
 
 
+;; TeX
+(with-eval-after-load 'latex-mode
+  (add-to-list 'company-backends 'company-math-symbols-latex)
+  (add-to-list 'company-backends 'company-latex-commands))
+(add-hook 'latex-mode-hook
+          '(lambda ()
+             (local-set-key "\C-cc" 'desperately-compile)))
+
+
 ;; make
 ;; https://emacs.stackexchange.com/questions/7475/
 (defun desperately-compile ()
