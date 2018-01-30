@@ -27,18 +27,12 @@
 ;; インデント
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(add-hook 'c-mode-common-hook
-          '(lambda ()
-             (setq ;indent-tabs-mode t
-                   c-basic-offset 4
-                   tab-width 4
-                   c-auto-new-line t
-                   c-hungry-delete-key t)))
 (add-hook 'python-mode-hook
           '(lambda ()
              (setq indent-tabs-mode nil
                    python-indent-offset 4)))
 
+;; C-aでインデントの頭へ
 (global-set-key "\C-a" '(lambda ()
                           (interactive)
                           (if (bolp)
@@ -145,7 +139,29 @@
 ;(setq display-buffer-function 'popwin:display-buffer)
 
 
+;; C/C++
+(add-hook 'c-mode-common-hook
+          '(lambda ()
+             (setq c-basic-offset 4
+                   tab-width 4
+                   c-auto-new-line t
+                   c-hungry-delete-key t)
+             (local-set-key "\C-cc" 'desperately-compile)))
+
+
 ;; scheme
 (add-hook 'scheme-mode-hook
           '(lambda ()
              (setq scheme-program-name "gosh -i")))
+
+
+;; make
+;; https://emacs.stackexchange.com/questions/7475/
+(defun desperately-compile ()
+  "Traveling up the path, find Makefile and compile"
+  (interactive)
+  (let ((pos (locate-dominating-file default-directory "Makefile")))
+    (when pos
+      (with-temp-buffer
+        (cd pos)
+        (compile "make -k")))))
