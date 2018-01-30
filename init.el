@@ -143,3 +143,9 @@
 
 ;(require 'popwin)
 ;(setq display-buffer-function 'popwin:display-buffer)
+
+
+;; scheme
+(add-hook 'scheme-mode-hook
+          '(lambda ()
+             (setq scheme-program-name "gosh -i")))
