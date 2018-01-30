@@ -3,6 +3,7 @@
 (package-initialize)
 
 (require 'cl)
+
 ;; 環境
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8)
@@ -33,6 +34,11 @@
                    tab-width 4
                    c-auto-new-line t
                    c-hungry-delete-key t)))
+(add-hook 'python-mode-hook
+          '(lambda ()
+             (setq indent-tabs-mode nil
+                   python-indent-offset 4)))
+
 (global-set-key "\C-a" '(lambda ()
                           (interactive)
                           (if (bolp)
@@ -85,13 +91,15 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (tabbar dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (exec-path-from-shell deferred company-jedi tabbar dashboard popwin flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(exec-path-from-shell-initialize)
 
 ;(require 'yasnippet)
 (with-eval-after-load 'yasnippet
@@ -120,6 +128,11 @@
                  'irony-completion-at-point-async)))
   (add-hook 'c-mode-common-hook 'irony-mode)
   (setq company-idle-delay 0.0))
+
+(with-eval-after-load 'jedi-core
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (add-to-list 'company-backends 'company-jedi)
+  (setq jedi:complete-on-dot t))
 
 (simpleclip-mode 1)
 
