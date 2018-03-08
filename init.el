@@ -27,10 +27,6 @@
 ;; インデント
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
-(add-hook 'python-mode-hook
-          '(lambda ()
-             (setq indent-tabs-mode nil
-                   python-indent-offset 4)))
 
 ;; C-aでインデントの頭へ
 (global-set-key "\C-a" '(lambda ()
@@ -85,7 +81,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (electric-operator shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -141,14 +137,22 @@
 
 
 ;; C/C++
+(add-hook 'c-mode-common-hook 'irony-mode)
 (add-hook 'c-mode-common-hook
           '(lambda ()
              (setq c-basic-offset 4
                    tab-width 4
                    c-auto-new-line t
                    c-hungry-delete-key t)
-             (local-set-key "\C-cc" 'desperately-compile)))
+             (local-set-key "\C-cc" 'desperately-compile)
+             (electric-operator-mode)))
 
+;; Python
+(add-hook 'python-mode-hook
+          '(lambda ()
+             (setq indent-tabs-mode nil
+                   python-indent-offset 4)
+             (electric-operator-mode)))
 
 ;; scheme
 (add-hook 'scheme-mode-hook
@@ -162,7 +166,9 @@
   (add-to-list 'company-backends 'company-latex-commands))
 (add-hook 'latex-mode-hook
           '(lambda ()
-             (local-set-key "\C-cc" 'desperately-compile)))
+             (local-set-key "\C-cc" 'desperately-compile)
+             (setq compilation-scroll-output t
+                   compilation-always-kill t)))
 
 
 ;; make
