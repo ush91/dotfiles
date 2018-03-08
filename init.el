@@ -81,7 +81,7 @@
  '(irony-additional-clang-options (quote ("-std=c++11")))
  '(package-selected-packages
    (quote
-    (electric-operator shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
+    (company-statistics electric-operator shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -100,6 +100,7 @@
 
 (require 'company)
 (global-company-mode 1)
+(company-statistics-mode)
 (global-set-key (kbd "C-M-i") 'company-complete)
 (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
 (setq company-backends (delete 'company-clang company-backends))
