@@ -130,9 +130,9 @@
 
 (simpleclip-mode 1)
 
-(setq shackle-rules
-      '(("*compilation*" :frame t)))
 (shackle-mode 1)
+(setq shackle-rules
+      '(("*compilation*" :frame t :other t)))
 
 ;; (require 'dashboard)
 ;; (dashboard-setup-startup-hook)
