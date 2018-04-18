@@ -8,14 +8,19 @@
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8)
 (setq-default cursor-type 'bar)
-(set-face-attribute 'default nil
-                    :family "Menlo"
-                    :height 120)
-(setq initial-frame-alist
-      '((top . 23)
-        (left . 775)
-        (height . 50)
-        (width . 90)))
+(cond ((equal system-type 'darwin)
+       (set-face-attribute 'default nil
+                           :family "Menlo"
+                           :height 120)
+       (setq initial-frame-alist
+             '((top . 23)
+               (left . 775)
+               (height . 50)
+               (width . 90))))
+      ((equal system-type 'gnu/linux)
+       (set-face-attribute 'default nil
+                           :family "Myrica M"
+                           :height 120)))
 ; (frame-parameters (selected-frame))
 
 ;; 自動生成ファイル
