@@ -94,52 +94,57 @@
  ;; If there is more than one, they won't work right.
  )
 
-(exec-path-from-shell-initialize)
+(when (package-installed-p 'exec-path-from-shell)
+  (exec-path-from-shell-initialize))
 
-;(require 'yasnippet)
-(with-eval-after-load 'yasnippet
-  (define-key yas-keymap (kbd "<tab>") nil)
-;  (add-hook 'c++-mode-hook '(yas-global-mode 1))
-  )
-(yas-global-mode 1)
+(when (package-installed-p 'yasnippet)
+  (yas-global-mode 1)
+  (define-key yas-keymap (kbd "<tab>") nil))
 
-(require 'company)
-(global-company-mode 1)
-(company-statistics-mode)
-(global-set-key (kbd "C-M-i") 'company-complete)
-(define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-(setq company-backends (delete 'company-clang company-backends))
+(when (package-installed-p 'company)
+  (global-company-mode 1)
+  (global-set-key (kbd "C-M-i") 'company-complete)
+  (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
+  (setq company-backends (delete 'company-clang company-backends))
 
-(with-eval-after-load 'irony
-  (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
-  (add-to-list 'company-backends 'company-irony)
-  (add-to-list 'company-backends '(company-irony-c-headers company-irony))
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  (add-hook 'irony-mode-hook
-            '(lambda ()
-               (interactive)
-               (define-key irony-mode-map [remap completion-at-point]
-                 'irony-completion-at-point-async)
-               (define-key irony-mode-map [remap complete-symbol]
-                 'irony-completion-at-point-async)))
-  (add-hook 'c-mode-common-hook 'irony-mode)
-  (setq company-idle-delay 0.0))
+  (when (package-installed-p 'company-statistics)
+    (company-statistics-mode))
 
-(with-eval-after-load 'jedi-core
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (add-to-list 'company-backends 'company-jedi)
-  (setq jedi:complete-on-dot t))
+  (when (package-installed-p 'company-irony)
+    (with-eval-after-load 'irony
+      (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
+      (add-to-list 'company-backends 'company-irony)
+      (add-to-list 'company-backends '(company-irony-c-headers company-irony))
+      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+      (add-hook 'irony-mode-hook
+                '(lambda ()
+                   (interactive)
+                   (define-key irony-mode-map [remap completion-at-point]
+                     'irony-completion-at-point-async)
+                   (define-key irony-mode-map [remap complete-symbol]
+                     'irony-completion-at-point-async)))
+      (add-hook 'c-mode-common-hook 'irony-mode)
+      (setq company-idle-delay 0.0)))
 
-(simpleclip-mode 1)
+  (when (package-installed-p 'company-jedi)
+    (with-eval-after-load 'jedi-core
+      (add-hook 'python-mode-hook 'jedi:setup)
+      (add-to-list 'company-backends 'company-jedi)
+      (setq jedi:complete-on-dot t))))
 
-(shackle-mode 1)
-(setq shackle-rules
-      '(("*compilation*" :frame t :other t)))
 
-;; (require 'dashboard)
-;; (dashboard-setup-startup-hook)
-;; (setq dashboard-items '((recents . 10)
-;;                         (bookmarks . 5)))
+(when (package-installed-p 'simpleclip)
+  (simpleclip-mode 1))
+
+(when (package-installed-p 'shackle)
+  (shackle-mode 1)
+  (setq shackle-rules
+        '(("*compilation*" :frame t :other t))))
+
+(when (package-installed-p 'dashboard)
+  (dashboard-setup-startup-hook)
+  (setq dashboard-items '((recents . 10)
+                          (bookmarks . 5))))
 
 
 ;; C/C++
