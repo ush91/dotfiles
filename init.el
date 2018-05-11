@@ -4,7 +4,7 @@
 
 (require 'cl)
 
-;; 環境
+;; Environment
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8)
 (setq-default cursor-type 'bar)
@@ -23,28 +23,28 @@
                            :height 120)))
 ; (frame-parameters (selected-frame))
 
-;; 自動生成ファイル
+;; Backups
 (setq backup-directory-alist '(("." . "~/.emacs.d/tmp")))
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/tmp/" t)))
 (setq auto-save-list-file-prefix nil)
 (setq create-lockfiles nil)
 
-;; インデント
+;; Indent
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
 
-;; C-aでインデントの頭へ
+;; Goto top of indentaion with C-a
 (global-set-key "\C-a" '(lambda ()
                           (interactive)
                           (if (bolp)
                               (back-to-indentation) (beginning-of-line))))
 
-;; テーマ
+;; Theme
 (load-theme 'deeper-blue t)
 (set-face-attribute 'show-paren-match nil
                     :background "#400000")
 
-;; 表示
+;; View
 (tool-bar-mode 0)
 (line-number-mode t)
 (column-number-mode t)
@@ -53,10 +53,12 @@
 (show-paren-mode t)
 (setq show-paren-style 'expression)
 
-;; スクロール
-(setq scroll-conservatively 1
+;; Scroll
+(setq scroll-conservatively 1000
       scroll-margin 1
       next-screen-context-lines 1)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control))))
+
 
 ;; recentf
 (setq recentf-max-saved-items 1000)
@@ -66,7 +68,7 @@
 (setq recentf-exclude '("/.emacs.d/bookmarks" "/.emacs.d/elpa/"))
 (recentf-mode 1)
 
-;; その他
+;; Others
 (setq kill-whole-line t)
 (setq require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
