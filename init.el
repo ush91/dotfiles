@@ -62,7 +62,8 @@
 (setq recentf-max-saved-items 1000)
 (setq recentf-auto-cleanup 'never)
 (setq recentf-auto-cleanup-timer
-      (run-with-idle-timer 30 t 'recentf-save-list))
+      (run-with-idle-timer 300 t 'recentf-save-list))
+(setq recentf-exclude '("/.emacs.d/bookmarks" "/.emacs.d/elpa/"))
 (recentf-mode 1)
 
 ;; その他
@@ -143,8 +144,8 @@
 
 (when (package-installed-p 'dashboard)
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents . 10)
-                          (bookmarks . 5))))
+  (setq dashboard-items '((recents . 20)
+                          (bookmarks . 10))))
 
 
 ;; C/C++
