@@ -190,8 +190,19 @@
 (defun desperately-compile ()
   "Traveling up the path, find Makefile and compile"
   (interactive)
-  (let ((pos (locate-dominating-file default-directory "Makefile")))
-    (when pos
-      (with-temp-buffer
-        (cd pos)
-        (compile "make -k")))))
+  (with-temp-buffer
+    (while (and (not (file-exists-p "Makefile"))
+                (not (file-exists-p "CMakeLists.txt"))
+                (not (equal default-directory "/")))
+      (cd ".."))
+    (cond ((file-exists-p "Makefile")
+           (compile "make -k"))
+          ((file-exists-p "CMakeLists.txt")
+           (when (not (file-exists-p "build"))
+             (make-directory "build"))
+           (cd "build")
+           (compile "cmake .. && make -k"))
+          ((equal default-directory "/")
+           (message "No Makefile or CMakeLists.txt"))
+          (t
+           (cd "..")))))
