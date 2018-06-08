@@ -159,7 +159,8 @@
                    c-auto-new-line t
                    c-hungry-delete-key t)
              (local-set-key "\C-cc" 'desperately-compile)
-             (electric-operator-mode)))
+             (electric-operator-mode)
+             (c-set-offset 'innamespace 0)))
 
 ;; Python
 (add-hook 'python-mode-hook
