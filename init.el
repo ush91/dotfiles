@@ -201,7 +201,10 @@
            (when (not (file-exists-p "build"))
              (make-directory "build"))
            (cd "build")
-           (compile "cmake .. && make -k"))
+           (if (and (file-exists-p "Makefile")
+                    (eq (shell-command "test Makefile -nt ../CMakeLists.txt") 0))
+               (compile "make -k")
+             (compile "cmake .. && make -k")))
           ((equal default-directory "/")
            (message "No Makefile or CMakeLists.txt"))
           (t
