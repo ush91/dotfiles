@@ -20,7 +20,12 @@
       ((equal system-type 'gnu/linux)
        (set-face-attribute 'default nil
                            :family "Myrica M"
-                           :height 120)))
+                           :height 120)
+       (setq initial-frame-alist
+             '((top . 35)
+               (left . 120)
+               (height . 58)
+               (width . 90)))))
 ; (frame-parameters (selected-frame))
 
 ;; Backups
