@@ -113,16 +113,22 @@
   (global-company-mode 1)
   (global-set-key (kbd "C-M-i") 'company-complete)
   (define-key company-active-map (kbd "<tab>") 'company-complete-selection)
-  (setq company-backends (delete 'company-clang company-backends))
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 2)
+  (setq company-dabbrev-downcase nil)
+
+  (setq company-backends
+        '((company-files company-keywords company-capf company-yasnippet)
+          (company-dabbrev company-abbrev)))
+  (make-variable-buffer-local 'company-backends)
 
   (when (package-installed-p 'company-statistics)
     (company-statistics-mode))
 
-  (when (package-installed-p 'company-irony)
+  (when (and (package-installed-p 'company-irony)
+             (package-installed-p 'company-irony-c-headers))
     (with-eval-after-load 'irony
       (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
-      (add-to-list 'company-backends 'company-irony)
-      (add-to-list 'company-backends '(company-irony-c-headers company-irony))
       (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
       (add-hook 'irony-mode-hook
                 '(lambda ()
@@ -131,14 +137,25 @@
                      'irony-completion-at-point-async)
                    (define-key irony-mode-map [remap complete-symbol]
                      'irony-completion-at-point-async)))
-      (add-hook 'c-mode-common-hook 'irony-mode)
-      (setq company-idle-delay 0.0)))
+      (add-hook 'c-mode-common-hook 'irony-mode))
+    (add-hook 'c-mode-common-hook
+              '(lambda ()
+                 (add-to-list 'company-backends '(company-irony
+                                                  company-irony-c-headers)))))
 
   (when (package-installed-p 'company-jedi)
     (with-eval-after-load 'jedi-core
       (add-hook 'python-mode-hook 'jedi:setup)
-      (add-to-list 'company-backends 'company-jedi)
-      (setq jedi:complete-on-dot t))))
+      (setq jedi:complete-on-dot t))
+    (add-hook 'python-mode-hook
+              '(lambda ()
+                 (add-to-list 'company-backends 'company-jedi))))
+
+  (when (package-installed-p 'company-math)
+    (add-hook 'latex-mode-hook
+              '(lambda ()
+                 (add-to-list 'company-backends '(company-math-symbols-latex
+                                                  company-latex-commands))))))
 
 
 (when (package-installed-p 'simpleclip)
@@ -181,14 +198,9 @@
 
 
 ;; TeX
-(with-eval-after-load 'latex-mode
-  (add-to-list 'company-backends 'company-math-symbols-latex)
-  (add-to-list 'company-backends 'company-latex-commands))
 (add-hook 'latex-mode-hook
           '(lambda ()
-             (local-set-key "\C-cc" 'desperately-compile)
-             (setq compilation-scroll-output t
-                   compilation-always-kill t)))
+             (local-set-key "\C-cc" 'desperately-compile)))
 
 
 ;; make
@@ -207,11 +219,13 @@
            (when (not (file-exists-p "build"))
              (make-directory "build"))
            (cd "build")
-           (if (and (file-exists-p "Makefile")
-                    (eq (shell-command "test Makefile -nt ../CMakeLists.txt") 0))
+           (if (file-newer-than-file-p "Makefile" "../CMakeLists.txt")
                (compile "make -k")
              (compile "cmake .. && make -k")))
           ((equal default-directory "/")
            (message "No Makefile or CMakeLists.txt"))
           (t
            (cd "..")))))
+
+(setq compilation-scroll-output t
+      compilation-always-kill t)
