@@ -227,5 +227,11 @@
           (t
            (cd "..")))))
 
+;; cmake
+(autoload 'cmake-mode "cmake-mode" nil t)
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+
+
 (setq compilation-scroll-output t
       compilation-always-kill t)
