@@ -196,8 +196,11 @@
           '(lambda ()
              (setq scheme-program-name "gosh -i")))
 
-
 ;; TeX
+(with-eval-after-load 'tex-mode
+  (require 'server)
+  (unless (server-running-p)
+    (server-start)))
 (add-hook 'latex-mode-hook
           '(lambda ()
              (local-set-key "\C-cc" 'desperately-compile)))
