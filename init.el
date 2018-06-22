@@ -32,7 +32,7 @@
                            :height 120)
        (setq initial-frame-alist
              '((top . 0)
-               (left .120)
+               (left . 120)
                (height . 62)
                (width . 90)))))
 ; (frame-parameters (selected-frame))
