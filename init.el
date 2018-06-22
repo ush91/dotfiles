@@ -2,11 +2,11 @@
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
 
-(require 'cl)
+(require 'cl-lib)
 
 ;; Environment
 (set-language-environment "Japanese")
-(prefer-coding-system 'utf-8)
+(prefer-coding-system 'utf-8-unix)
 (setq-default cursor-type 'bar)
 (cond ((equal system-type 'darwin)
        (set-face-attribute 'default nil
@@ -25,6 +25,15 @@
              '((top . 35)
                (left . 120)
                (height . 58)
+               (width . 90))))
+      ((equal system-type 'windows-nt)
+       (set-face-attribute 'default nil
+                           :family "Myrica M"
+                           :height 120)
+       (setq initial-frame-alist
+             '((top . 0)
+               (left .120)
+               (height . 62)
                (width . 90)))))
 ; (frame-parameters (selected-frame))
 
