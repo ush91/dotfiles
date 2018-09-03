@@ -34,7 +34,8 @@
              '((top . 0)
                (left . 120)
                (height . 62)
-               (width . 90)))))
+               (width . 90)))
+       (setq w32-pipe-read-delay 0)))
 ; (frame-parameters (selected-frame))
 
 ;; Backups
