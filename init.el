@@ -180,6 +180,10 @@
   (setq dashboard-items '((recents . 20)
                           (bookmarks . 10))))
 
+(when (package-installed-p 'electric-operator)
+  (add-hook 'c-mode-common-hook 'electric-operator-mode)
+  (add-hook 'python-mode-hook 'electric-operator-mode))
+
 
 ;; C/C++
 (add-hook 'c-mode-common-hook 'irony-mode)
@@ -190,15 +194,13 @@
                    c-auto-new-line t
                    c-hungry-delete-key t)
              (local-set-key "\C-cc" 'desperately-compile)
-             (electric-operator-mode)
              (c-set-offset 'innamespace 0)))
 
 ;; Python
 (add-hook 'python-mode-hook
           '(lambda ()
              (setq indent-tabs-mode nil
-                   python-indent-offset 4)
-             (electric-operator-mode)))
+                   python-indent-offset 4)))
 
 ;; scheme
 (add-hook 'scheme-mode-hook
