@@ -1,11 +1,5 @@
 # $ZDOTDIR/.zshrc
 
-## /etc/zshenv ##
-# if [[ -d "$HOME"/.zsh.d ]]
-# then
-#     ZDOTDIR="$HOME"/.zsh.d/
-# fi
-
 ##日本語
 export LANG=ja_JP.UTF-8 #UTF-8
 setopt print_eight_bit  #ファイル名
@@ -45,6 +39,18 @@ PROMPT="
 %(!.#.$) %f"
 #%F{white}%n%f:%F{white}%m%f%(!.#.$) "
 RPROMPT="%F{red}[%~]%f"
+
+display_time_in_prompt() {
+    PROMPT="
+%F{white}%n [%m] %F{green}%D{%F %R}%F{white}
+%(!.#.$) %f"
+    zle reset-prompt
+    zle .accept-line
+    PROMPT="
+%F{white}%n [%m]
+%(!.#.$) %f"
+}
+zle -N accept-line display_time_in_prompt
 
 # 右プロンプトを消す
 setopt transient_rprompt
