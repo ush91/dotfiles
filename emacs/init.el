@@ -106,21 +106,7 @@
 ;(delete-selection-mode t)
 
 ;; packages
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(irony-additional-clang-options (quote ("-std=c++11")))
- '(package-selected-packages
-   (quote
-    (company-statistics electric-operator shackle company-math exec-path-from-shell deferred company-jedi tabbar dashboard flycheck-irony company-irony-c-headers simpleclip company-irony company irony yasnippet))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq custom-file (locate-user-emacs-file "customfile.el"))
 
 (when (package-installed-p 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
