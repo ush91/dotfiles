@@ -147,7 +147,8 @@
     (add-hook 'c-mode-common-hook
               '(lambda ()
                  (add-to-list 'company-backends '(company-irony
-                                                  company-irony-c-headers)))))
+                                                  company-irony-c-headers
+                                                  company-yasnippet)))))
 
   (when (package-installed-p 'company-jedi)
     (with-eval-after-load 'jedi-core
