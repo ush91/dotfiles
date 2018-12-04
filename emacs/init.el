@@ -25,7 +25,17 @@
              '((top . 35)
                (left . 120)
                (height . 58)
-               (width . 90))))
+               (width . 90)))
+       (when (require 'mozc nil t)
+         (setq default-input-method "japanese-mozc")
+         (global-set-key
+          [henkan] (lambda () (interactive)
+                     (unless current-input-method
+                       (toggle-input-method))))
+         (defun advice:mozc-handle-event-muhenkan (event)
+           (when (equal event 'muhenkan)
+             (toggle-input-method)))
+         (advice-add 'mozc-handle-event :before 'advice:mozc-handle-event-muhenkan)))
       ((equal system-type 'windows-nt)
        (set-face-attribute 'default nil
                            :family "Myrica M"
