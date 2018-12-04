@@ -159,7 +159,7 @@
                  (add-to-list 'company-backends 'company-jedi))))
 
   (when (package-installed-p 'company-math)
-    (add-hook 'latex-mode-hook
+    (add-hook 'tex-mode-hook
               '(lambda ()
                  (add-to-list 'company-backends '(company-math-symbols-latex
                                                   company-latex-commands))))))
@@ -206,11 +206,12 @@
              (setq scheme-program-name "gosh -i")))
 
 ;; TeX
+(add-to-list 'auto-mode-alist '("\\.tex\\'" . latex-mode))
 (with-eval-after-load 'tex-mode
   (require 'server)
   (unless (server-running-p)
     (server-start)))
-(add-hook 'latex-mode-hook
+(add-hook 'tex-mode-hook
           '(lambda ()
              (local-set-key "\C-cc" 'desperately-compile)))
 
