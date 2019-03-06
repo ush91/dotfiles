@@ -164,7 +164,6 @@
                  (add-to-list 'company-backends '(company-math-symbols-latex
                                                   company-latex-commands))))))
 
-
 (when (package-installed-p 'simpleclip)
   (simpleclip-mode 1))
 
@@ -181,6 +180,11 @@
 (when (package-installed-p 'electric-operator)
   (add-hook 'c-mode-common-hook 'electric-operator-mode)
   (add-hook 'python-mode-hook 'electric-operator-mode))
+
+(when (and (package-installed-p 'rustic)
+           (package-installed-p 'eglot))
+  (with-eval-after-load 'rustic
+    (setq-default rustic-rls-pkg 'eglot)))
 
 
 ;; C/C++
