@@ -232,6 +232,10 @@
           '(lambda ()
              (local-set-key "\C-cc" 'desperately-compile)))
 
+;; JavaScript
+(with-eval-after-load 'js
+  (setq-default js-indent-level 2))
+
 ;; TOML
 (with-eval-after-load 'conf-mode
   (when (package-installed-p 'electric-operator)
