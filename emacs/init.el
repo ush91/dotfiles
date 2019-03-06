@@ -219,6 +219,14 @@
           '(lambda ()
              (local-set-key "\C-cc" 'desperately-compile)))
 
+;; TOML
+(with-eval-after-load 'conf-mode
+  (when (package-installed-p 'electric-operator)
+    (require 'electric-operator)
+    (electric-operator-add-rules-for-mode 'conf-toml-mode
+                                          (cons "=" " = "))
+    (add-hook 'conf-toml-mode-hook 'electric-operator-mode)))
+
 
 ;; make
 ;; https://emacs.stackexchange.com/questions/7475/
