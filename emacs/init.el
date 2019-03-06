@@ -182,6 +182,19 @@
   (add-hook 'python-mode-hook 'electric-operator-mode))
 
 (when (and (package-installed-p 'rustic)
+           (package-installed-p 'electric-operator))
+  (with-eval-after-load 'rustic
+    (require 'electric-operator)
+    (apply #'electric-operator-add-rules-for-mode 'rustic-mode
+           (electric-operator-get-rules-for-mode 'rust-mode))
+    (electric-operator-add-rules-for-mode 'rustic-mode
+                                          (cons "->" " ->")
+                                          (cons "=>" " =>")
+                                          (cons "<<" " <<")
+                                          (cons ">>" " >>"))
+    (add-hook 'rustic-mode-hook 'electric-operator-mode)))
+
+(when (and (package-installed-p 'rustic)
            (package-installed-p 'eglot))
   (with-eval-after-load 'rustic
     (setq-default rustic-rls-pkg 'eglot)))
