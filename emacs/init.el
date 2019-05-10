@@ -143,7 +143,15 @@
                      'irony-completion-at-point-async)
                    (define-key irony-mode-map [remap complete-symbol]
                      'irony-completion-at-point-async)))
-      (add-hook 'c-mode-common-hook 'irony-mode))
+      (add-hook 'c-mode-common-hook 'irony-mode)
+
+      ;; macOS workaround
+      ;; https://github.com/Sarcasm/irony-mode/wiki/Mac-OS-X-issues-and-workaround
+      (when (equal system-type 'darwin)
+        (custom-set-variables '(irony-additional-clang-options
+                                (append irony-additional-clang-options
+                                        (split-string (substring (shell-command-to-string "echo | clang -x c++ -v -E - 2>&1 | sed -n '/^#include </,/^End/s|^[^/]*\\([^ ]*/include[^ ]*\\).*$|-I\\1|p' | sed '/^$/d'") 0 -1) "\n"))))))
+
     (add-hook 'c-mode-common-hook
               '(lambda ()
                  (add-to-list 'company-backends '(company-irony
