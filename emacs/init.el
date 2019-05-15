@@ -164,7 +164,18 @@
       (setq jedi:complete-on-dot t))
     (add-hook 'python-mode-hook
               '(lambda ()
-                 (add-to-list 'company-backends 'company-jedi))))
+                 (add-to-list 'company-backends 'company-jedi)))
+
+    (defun setup-jedi-for-pipenv-venv ()
+      (when (and (executable-find "pipenv")
+                 (locate-dominating-file (buffer-file-name) "Pipfile"))
+        (let ((server-args (list "--virtual-env" (substring (shell-command-to-string "pipenv --venv") 0 -1))))
+          (setq-local jedi:server-args
+                      (if (boundp 'jedi:server-args)
+                        (append jedi:server-args server-args)
+                        server-args)))))
+
+    (add-hook 'python-mode-hook 'setup-jedi-for-pipenv-venv))
 
   (when (package-installed-p 'company-math)
     (add-hook 'tex-mode-hook
