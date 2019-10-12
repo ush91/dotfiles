@@ -69,6 +69,33 @@
 (set-face-attribute 'show-paren-match nil
                     :background "#400000")
 
+(setq var:active-mode-line-color "deep sky blue")
+(set-face-background 'mode-line var:active-mode-line-color)
+(defun hook:set-active-mode-line-focus-in ()
+  "Set mode line color to active color (deep sky blue) when focus in"
+  (setq var:active-mode-line-color "deep sky blue")
+  (set-face-background 'mode-line var:active-mode-line-color))
+(defun hook:set-active-mode-line-focus-out ()
+  "Set mode line color to inactive color (dark slate gray) when focus out"
+  (setq var:active-mode-line-color "dark slate gray")
+  (set-face-background 'mode-line var:active-mode-line-color))
+(add-hook 'focus-in-hook 'hook:set-active-mode-line-focus-in)
+(add-hook 'focus-out-hook 'hook:set-active-mode-line-focus-out)
+
+(defun hook:change-mode-line-color-save-complete ()
+  "Set mode line color to lawn green for saving and reserve to restore the color"
+  (set-face-background 'mode-line "lawn green")
+  (run-with-idle-timer
+   0.15 nil (lambda () (set-face-background 'mode-line var:active-mode-line-color))))
+(add-hook 'after-save-hook 'hook:change-mode-line-color-save-complete)
+
+(defun hook:change-mode-line-color-ring-bell ()
+  "Set mode line color to orange red for warning and reserve to restore the color"
+  (set-face-background 'mode-line "orange red")
+  (run-with-idle-timer
+   0.04 nil (lambda () (set-face-background 'mode-line var:active-mode-line-color))))
+(setq ring-bell-function 'hook:change-mode-line-color-ring-bell)
+
 ;; View
 (tool-bar-mode 0)
 (line-number-mode t)
@@ -98,7 +125,6 @@
 (setq require-final-newline t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (setq inhibit-startup-screen t)
-(setq ring-bell-function 'ignore)
 
 ;; clipboard
 ;(setq x-select-enable-clipboard t)
