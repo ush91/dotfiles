@@ -88,9 +88,9 @@
 ;; recentf
 (setq recentf-max-saved-items 1000)
 (setq recentf-auto-cleanup 'never)
-(setq recentf-auto-cleanup-timer
+(setq recentf-auto-save-timer
       (run-with-idle-timer 300 t 'recentf-save-list))
-(setq recentf-exclude '("/.emacs.d/bookmarks" "/.emacs.d/elpa/"))
+(setq recentf-exclude '("/\\.emacs\\.d/\\(?:bookmarks\\|recentf\\)$" "/\\.emacs\\.d/elpa/"))
 (recentf-mode 1)
 
 ;; Others
