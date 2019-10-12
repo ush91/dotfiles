@@ -194,6 +194,14 @@
                  (add-to-list 'company-backends '(company-math-symbols-latex
                                                   company-latex-commands))))))
 
+(when (package-installed-p 'typescript-mode)
+  (with-eval-after-load 'typescript-mode
+    (setq typescript-indent-level 2)
+    (add-hook 'typescript-mode-hook 'eglot-ensure)))
+
+(when (package-installed-p 'vue-html-mode)
+  (setq-default vue-html-extra-indent 2))
+
 (when (package-installed-p 'simpleclip)
   (simpleclip-mode 1))
 
@@ -265,6 +273,9 @@
 ;; JavaScript
 (with-eval-after-load 'js
   (setq-default js-indent-level 2))
+
+(with-eval-after-load 'css-mode
+  (setq-default css-indent-offset 2))
 
 ;; TOML
 (with-eval-after-load 'conf-mode
