@@ -175,7 +175,18 @@
                         (append jedi:server-args server-args)
                         server-args)))))
 
-    (add-hook 'python-mode-hook 'setup-jedi-for-pipenv-venv))
+    (add-hook 'python-mode-hook 'setup-jedi-for-pipenv-venv)
+
+    ;; workaround for jedi replacing int literal with keywords (and, if, etc.)
+    ;; https://www.reddit.com/r/emacs/comments/7dnbxl/
+    (defun advice:prevent-jedi-replace-int (fn command &optional arg &rest _)
+      (unless (when (and (equal command 'prefix)
+                         (> (point) 0))
+                (let ((prefix (company-grab-symbol)))
+                  (when prefix
+                    (string-match "^[0-9]+$" prefix))))
+        (funcall fn command arg)))
+    (advice-add 'company-jedi :around 'advice:prevent-jedi-replace-int))
 
   (when (package-installed-p 'company-math)
     (add-hook 'tex-mode-hook
