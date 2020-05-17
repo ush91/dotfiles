@@ -263,6 +263,23 @@
   (with-eval-after-load 'rustic
     (setq-default rustic-rls-pkg 'eglot)))
 
+;; Comment key bind
+(defun comment-or-uncomment-region-or-line-or-insert ()
+  "Comment out or uncomment or create empty comment line"
+  (interactive)
+  (when comment-start
+    (if (use-region-p)
+        (comment-or-uncomment-region (region-beginning) (region-end))
+      (if (and (not (equal last-command
+                           'comment-or-uncomment-region-or-line-or-insert))
+               (save-excursion (beginning-of-line) (looking-at-p "\\s-*$")))
+          (progn (indent-according-to-mode)
+                 (insert (comment-padright comment-start))
+                 (save-excursion (unless (string= "" comment-end)
+                                   (insert (comment-padleft comment-end)))))
+        (comment-line 1)))))
+(global-set-key "\M-;" 'comment-or-uncomment-region-or-line-or-insert)
+
 
 ;; C/C++
 (add-hook 'c-mode-common-hook 'irony-mode)
