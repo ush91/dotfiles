@@ -158,9 +158,9 @@
     (company-statistics-mode))
 
   (when (and (package-installed-p 'company-irony)
-             (package-installed-p 'company-irony-c-headers))
+             (package-installed-p 'company-c-headers))
     (with-eval-after-load 'irony
-      (custom-set-variables '(irony-additional-clang-options '("-std=c++11")))
+      (custom-set-variables '(irony-additional-clang-options '("-std=c++14")))
       (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
       (add-hook 'irony-mode-hook
                 '(lambda ()
@@ -171,17 +171,26 @@
                      'irony-completion-at-point-async)))
       (add-hook 'c-mode-common-hook 'irony-mode)
 
+      ;; https://github.com/randomphrase/company-c-headers/issues/14#issuecomment-300564039
+      (setq company-c-headers-path-user
+            (lambda () (when irony-mode
+                         (irony--extract-user-search-paths irony--compile-options
+                                                           irony--working-directory))))
+
       ;; macOS workaround
       ;; https://github.com/Sarcasm/irony-mode/wiki/Mac-OS-X-issues-and-workaround
       (when (equal system-type 'darwin)
-        (custom-set-variables '(irony-additional-clang-options
-                                (append irony-additional-clang-options
-                                        (split-string (substring (shell-command-to-string "echo | clang -x c++ -v -E - 2>&1 | sed -n '/^#include </,/^End/s|^[^/]*\\([^ ]*/include[^ ]*\\).*$|-I\\1|p' | sed '/^$/d'") 0 -1) "\n"))))))
+        (let ((paths (split-string (substring (shell-command-to-string "echo | clang -xc++ -v -E - 2>&1 | sed -n '/^#include </,/^End/s|^ \\([^ ]*\\)$|\\1|p'") 0 -1) "\n")))
+          (custom-set-variables
+           (list 'irony-additional-clang-options
+                 (append irony-additional-clang-options
+                         (mapcar (lambda (p) (concat "-I" p)) paths)))
+           (list 'company-c-headers-path-system paths)))))
 
     (add-hook 'c-mode-common-hook
               '(lambda ()
-                 (add-to-list 'company-backends '(company-irony
-                                                  company-irony-c-headers
+                 (add-to-list 'company-backends '(company-c-headers
+                                                  company-irony
                                                   company-yasnippet)))))
 
   (when (package-installed-p 'company-jedi)
