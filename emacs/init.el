@@ -280,6 +280,9 @@
         (comment-line 1)))))
 (global-set-key "\M-;" 'comment-or-uncomment-region-or-line-or-insert)
 
+(global-set-key (kbd "<M-right>") 'bs-cycle-next)
+(global-set-key (kbd "<M-left>") 'bs-cycle-previous)
+
 
 ;; C/C++
 (add-hook 'c-mode-common-hook 'irony-mode)
