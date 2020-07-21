@@ -172,20 +172,22 @@
       (add-hook 'c-mode-common-hook 'irony-mode)
 
       ;; https://github.com/randomphrase/company-c-headers/issues/14#issuecomment-300564039
-      (setq company-c-headers-path-user
-            (lambda () (when irony-mode
-                         (irony--extract-user-search-paths irony--compile-options
-                                                           irony--working-directory))))
+      (custom-set-variables
+       '(company-c-headers-path-user
+         (lambda () (when irony-mode
+                      (irony--extract-user-search-paths irony--compile-options
+                                                        irony--working-directory)))))
 
       ;; macOS workaround
       ;; https://github.com/Sarcasm/irony-mode/wiki/Mac-OS-X-issues-and-workaround
       (when (equal system-type 'darwin)
+        (require 'company-c-headers)
         (let ((paths (split-string (substring (shell-command-to-string "echo | clang -xc++ -v -E - 2>&1 | sed -n '/^#include </,/^End/s|^ \\([^ ]*\\)$|\\1|p'") 0 -1) "\n")))
           (custom-set-variables
-           (list 'irony-additional-clang-options
-                 (append irony-additional-clang-options
-                         (mapcar (lambda (p) (concat "-I" p)) paths)))
-           (list 'company-c-headers-path-system paths)))))
+           '(irony-additional-clang-options
+             (append irony-additional-clang-options
+                     (mapcar (lambda (p) (concat "-I" p)) paths)))
+           '(company-c-headers-path-system paths)))))
 
     (add-hook 'c-mode-common-hook
               '(lambda ()
