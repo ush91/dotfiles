@@ -98,6 +98,7 @@
 
 ;; View
 (tool-bar-mode 0)
+(unless (eq window-system 'ns) (menu-bar-mode 0))
 (line-number-mode t)
 (column-number-mode t)
 (global-linum-mode t)
