@@ -244,6 +244,12 @@
 (when (package-installed-p 'vue-html-mode)
   (setq-default vue-html-extra-indent 2))
 
+(when (and (package-installed-p 'rustic)
+           (package-installed-p 'exec-path-from-shell))
+  (with-eval-after-load 'rustic
+    (exec-path-from-shell-copy-envs '("RUSTUP_HOME" "CARGO_HOME"))
+    (setq-default rustic-format-on-save t)))
+
 (when (package-installed-p 'simpleclip)
   (simpleclip-mode 1))
 
