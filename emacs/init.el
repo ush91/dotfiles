@@ -236,6 +236,25 @@
                  (add-to-list 'company-backends '(company-math-symbols-latex
                                                   company-latex-commands))))))
 
+(defun hook:set-flycheck-eslint-executable ()
+  "Find and set local installed eslint."
+  (when (buffer-file-name)
+    (let ((rootdir (locate-dominating-file (buffer-file-name) "package.json")))
+      (when rootdir
+        (let ((eslint-path (expand-file-name "node_modules/.bin/eslint" rootdir)))
+          (when (file-exists-p eslint-path)
+            (setq-local flycheck-javascript-eslint-executable eslint-path)))))))
+
+(when (and (package-installed-p 'vue-mode)
+           (package-installed-p 'flycheck))
+  (with-eval-after-load 'vue-mode
+    (require 'flycheck)
+    (flycheck-add-mode 'javascript-eslint 'vue-mode)
+    (flycheck-add-mode 'javascript-eslint 'vue-html-mode)
+    (flycheck-add-mode 'javascript-eslint 'css-mode)
+    (add-hook 'vue-mode-hook 'flycheck-mode)
+    (add-hook 'vue-mode-hook 'hook:set-flycheck-eslint-executable)))
+
 (when (package-installed-p 'typescript-mode)
   (with-eval-after-load 'typescript-mode
     (setq typescript-indent-level 2)
@@ -265,7 +284,8 @@
 
 (when (package-installed-p 'electric-operator)
   (add-hook 'c-mode-common-hook 'electric-operator-mode)
-  (add-hook 'python-mode-hook 'electric-operator-mode))
+  (add-hook 'python-mode-hook 'electric-operator-mode)
+  (add-hook 'js-mode-hook 'electric-operator-mode))
 
 (when (and (package-installed-p 'rustic)
            (package-installed-p 'electric-operator))
