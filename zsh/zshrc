@@ -31,7 +31,7 @@ setopt hist_reduce_blanks #余分なスペースを省く
 setopt share_history      #履歴共有
 
 ##zsh-notify
-source ~/.zsh.d/zsh-notify/notify.plugin.zsh
+[ -f "$ZDOTDIR/zsh-notify/notify.plugin.zsh" ] && source "$ZDOTDIR/zsh-notify/notify.plugin.zsh"
 
 ##プロンプト
 PROMPT="

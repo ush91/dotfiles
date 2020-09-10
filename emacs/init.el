@@ -49,8 +49,9 @@
 ; (frame-parameters (selected-frame))
 
 ;; Backups
-(setq backup-directory-alist '(("." . "~/.emacs.d/tmp")))
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/tmp/" t)))
+(let ((tmp (file-name-as-directory (expand-file-name "tmp" user-emacs-directory))))
+  (setq backup-directory-alist (list (cons "." tmp)))
+  (setq auto-save-file-name-transforms (list (list ".*" tmp t))))
 (setq auto-save-list-file-prefix nil)
 (setq create-lockfiles nil)
 
@@ -118,7 +119,10 @@
 (setq recentf-auto-cleanup 'never)
 (setq recentf-auto-save-timer
       (run-with-idle-timer 300 t 'recentf-save-list))
-(setq recentf-exclude '("/\\.emacs\\.d/\\(?:bookmarks\\|recentf\\)$" "/\\.emacs\\.d/elpa/"))
+(let ((emacs-root (regexp-quote (expand-file-name user-emacs-directory))))
+  (setq recentf-exclude
+        (list (concat emacs-root "\\(?:bookmarks\\|recentf\\)\\'")
+              (concat emacs-root (file-name-as-directory "elpa")))))
 (recentf-mode 1)
 
 ;; Others
