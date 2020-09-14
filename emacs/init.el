@@ -48,6 +48,12 @@
        (setq w32-pipe-read-delay 0)))
 ; (frame-parameters (selected-frame))
 
+(setq custom-file (locate-user-emacs-file "customfile.el"))
+(load custom-file)
+
+(custom-set-variables '(gc-cons-threshold (* 64 1024 1024)))
+(setq read-process-output-max (* 1 1024 1024))
+
 ;; Backups
 (let ((tmp (file-name-as-directory (expand-file-name "tmp" user-emacs-directory))))
   (setq backup-directory-alist (list (cons "." tmp)))
@@ -137,8 +143,6 @@
 ;(delete-selection-mode t)
 
 ;; packages
-(setq custom-file (locate-user-emacs-file "customfile.el"))
-
 (when (package-installed-p 'exec-path-from-shell)
   (exec-path-from-shell-initialize))
 
@@ -200,41 +204,32 @@
                                                   company-irony
                                                   company-yasnippet)))))
 
-  (when (package-installed-p 'company-jedi)
-    (with-eval-after-load 'jedi-core
-      (add-hook 'python-mode-hook 'jedi:setup)
-      (setq jedi:complete-on-dot t))
-    (add-hook 'python-mode-hook
-              '(lambda ()
-                 (add-to-list 'company-backends 'company-jedi)))
-
-    (defun setup-jedi-for-pipenv-venv ()
-      (when (and (executable-find "pipenv")
-                 (locate-dominating-file (buffer-file-name) "Pipfile"))
-        (let ((server-args (list "--virtual-env" (substring (shell-command-to-string "pipenv --venv") 0 -1))))
-          (setq-local jedi:server-args
-                      (if (boundp 'jedi:server-args)
-                        (append jedi:server-args server-args)
-                        server-args)))))
-
-    (add-hook 'python-mode-hook 'setup-jedi-for-pipenv-venv)
-
-    ;; workaround for jedi replacing int literal with keywords (and, if, etc.)
-    ;; https://www.reddit.com/r/emacs/comments/7dnbxl/
-    (defun advice:prevent-jedi-replace-int (fn command &optional arg &rest _)
-      (unless (when (and (equal command 'prefix)
-                         (> (point) 0))
-                (let ((prefix (company-grab-symbol)))
-                  (when prefix
-                    (string-match "^[0-9]+$" prefix))))
-        (funcall fn command arg)))
-    (advice-add 'company-jedi :around 'advice:prevent-jedi-replace-int))
-
   (when (package-installed-p 'company-math)
     (add-hook 'tex-mode-hook
               '(lambda ()
                  (add-to-list 'company-backends '(company-math-symbols-latex
                                                   company-latex-commands))))))
+
+(with-eval-after-load 'python
+  (when (package-installed-p 'lsp-mode)
+    (defun hook:set-pipenv-lsp-pyls ()
+      "Find pipenv venv path and set to pyls"
+      (let ((rootdir (locate-dominating-file (buffer-file-name) "Pipfile")))
+        (when (and (executable-find "pipenv")
+                   rootdir)
+          (let ((venvpath (substring (shell-command-to-string "pipenv --venv") 0 -1)))
+            (when (file-directory-p venvpath)
+              (setq-local lsp-pyls-plugins-jedi-environment venvpath))))))
+
+    (add-hook 'python-mode-hook 'hook:set-pipenv-lsp-pyls)
+    (add-hook 'python-mode-hook 'lsp)
+    (when (executable-find "flake8")
+      (custom-set-variables '(lsp-pyls-plugins-flake8-enabled t)
+                            '(lsp-pyls-plugins-pycodestyle-enabled nil)
+                            '(lsp-pyls-plugins-pyflakes-enabled nil)
+                            '(lsp-pyls-plugins-mccabe-enabled nil)))
+    (when (executable-find "yapf")
+      (custom-set-variables '(lsp-pyls-plugins-yapf-enabled t)))))
 
 (defun hook:set-flycheck-eslint-executable ()
   "Find and set local installed eslint."
@@ -253,21 +248,24 @@
     (flycheck-add-mode 'javascript-eslint 'vue-html-mode)
     (flycheck-add-mode 'javascript-eslint 'css-mode)
     (add-hook 'vue-mode-hook 'flycheck-mode)
-    (add-hook 'vue-mode-hook 'hook:set-flycheck-eslint-executable)))
+    (add-hook 'vue-mode-hook 'hook:set-flycheck-eslint-executable)
+    (when (package-installed-p 'lsp-mode)
+      (add-hook 'vue-mode-hook 'lsp))))
 
 (when (package-installed-p 'typescript-mode)
   (with-eval-after-load 'typescript-mode
-    (setq typescript-indent-level 2)
-    (add-hook 'typescript-mode-hook 'eglot-ensure)))
+    (setq-default typescript-indent-level 2)
+    (when (package-installed-p 'lsp-mode)
+      (add-hook 'typescript-mode-hook 'lsp))))
 
 (when (package-installed-p 'vue-html-mode)
   (setq-default vue-html-extra-indent 2))
 
-(when (and (package-installed-p 'rustic)
-           (package-installed-p 'exec-path-from-shell))
+(when (package-installed-p 'rustic)
   (with-eval-after-load 'rustic
-    (exec-path-from-shell-copy-envs '("RUSTUP_HOME" "CARGO_HOME"))
-    (setq-default rustic-format-on-save t)))
+    (setq-default rustic-format-on-save t)
+    (when (package-installed-p 'exec-path-from-shell)
+      (exec-path-from-shell-copy-envs '("RUSTUP_HOME" "CARGO_HOME")))))
 
 (when (package-installed-p 'simpleclip)
   (simpleclip-mode 1))
@@ -299,11 +297,6 @@
                                           (cons "<<" " <<")
                                           (cons ">>" " >>"))
     (add-hook 'rustic-mode-hook 'electric-operator-mode)))
-
-(when (and (package-installed-p 'rustic)
-           (package-installed-p 'eglot))
-  (with-eval-after-load 'rustic
-    (setq-default rustic-rls-pkg 'eglot)))
 
 ;; Comment key bind
 (defun comment-or-uncomment-region-or-line-or-insert ()
