@@ -265,7 +265,12 @@
   (with-eval-after-load 'rustic
     (setq-default rustic-format-on-save t)
     (when (package-installed-p 'exec-path-from-shell)
-      (exec-path-from-shell-copy-envs '("RUSTUP_HOME" "CARGO_HOME")))))
+      (exec-path-from-shell-copy-envs '("RUSTUP_HOME" "CARGO_HOME")))
+    (when (package-installed-p 'electric-operator)
+      (require 'electric-operator)
+      (apply 'electric-operator-add-rules-for-mode 'rustic-mode
+             (electric-operator-get-rules-for-mode 'rust-mode))
+      (add-hook 'rustic-mode-hook 'electric-operator-mode))))
 
 (when (package-installed-p 'simpleclip)
   (simpleclip-mode 1))
@@ -284,19 +289,6 @@
   (add-hook 'c-mode-common-hook 'electric-operator-mode)
   (add-hook 'python-mode-hook 'electric-operator-mode)
   (add-hook 'js-mode-hook 'electric-operator-mode))
-
-(when (and (package-installed-p 'rustic)
-           (package-installed-p 'electric-operator))
-  (with-eval-after-load 'rustic
-    (require 'electric-operator)
-    (apply #'electric-operator-add-rules-for-mode 'rustic-mode
-           (electric-operator-get-rules-for-mode 'rust-mode))
-    (electric-operator-add-rules-for-mode 'rustic-mode
-                                          (cons "->" " ->")
-                                          (cons "=>" " =>")
-                                          (cons "<<" " <<")
-                                          (cons ">>" " >>"))
-    (add-hook 'rustic-mode-hook 'electric-operator-mode)))
 
 ;; Comment key bind
 (defun comment-or-uncomment-region-or-line-or-insert ()
