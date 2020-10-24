@@ -7,25 +7,70 @@
 ;; Environment
 (set-language-environment "Japanese")
 (prefer-coding-system 'utf-8-unix)
-(setq-default cursor-type 'bar)
-(cond ((equal system-type 'darwin)
-       (set-face-attribute 'default nil
-                           :family "Menlo"
-                           :height 120)
-       (setq initial-frame-alist
-             '((top . 23)
-               (left . 775)
-               (height . 50)
-               (width . 90))))
+
+;; Frame
+(tool-bar-mode 0)
+(unless (eq window-system 'ns) (menu-bar-mode 0))
+
+(when window-system
+  (let* ((font-list '(("HackGenSZ35C" . 120)
+                      ("Menlo" . 120)
+                      ("Myrica M" . 110)))
+         (font-cons (seq-find '(lambda (font) (x-list-fonts (car font))) font-list)))
+    (when font-cons
+      (let ((font-family (car font-cons))
+            (font-height (cdr font-cons)))
+        (set-face-attribute 'default nil
+                            :family font-family
+                            :height font-height)))))
+
+(defconst const:init:line-width 90)
+(defconst const:init:left-pixel 120)
+
+(defun proc:init:get-max-frame-height ()
+  "Get maximum frame height to fit within display."
+  (when window-system
+    (let* ((external-height (nth 3 (frame-monitor-attribute 'workarea)))
+           (geometry (frame-geometry))
+           (title-bar-height (cddr (assoc 'title-bar-size geometry)))
+           (menu-bar-height (if (cdr (assoc 'menu-bar-external geometry))
+                                (cddr (assoc 'menu-bar-size geometry)) 0))
+           (tool-bar-height (if (cdr (assoc 'tool-bar-external geometry))
+                                (cddr (assoc 'tool-bar-size geometry)) 0))
+           (tab-bar-height (if (cdr (assoc 'tab-bar-external geometry))
+                               (cddr (assoc 'tab-bar-size geometry)) 0))
+           (external-border (cddr (assoc 'external-border-size geometry)))
+           (internal-border (* 2 (cdr (assoc 'internal-border-width geometry)))))
+      (- external-height title-bar-height menu-bar-height tool-bar-height
+         tab-bar-height external-border internal-border))))
+
+(defun proc:init:calc-frame-pixel-width (line-width)
+  "Calculate pixel width of frame with given line width LINE-WIDTH."
+  (let ((f-geometry (frame-geometry)))
+    (+ (* line-width (frame-char-width))
+       (cddr (assoc 'external-border-size f-geometry))
+       (* 2 (cdr (assoc 'internal-border-width f-geometry)))
+       (frame-scroll-bar-width)
+       (apply '+ (seq-filter 'integerp (window-fringes))))))
+
+(when window-system
+  (let* ((max-frame-height (proc:init:get-max-frame-height))
+         (display-aspect (/ (float (display-pixel-width)) (display-pixel-height)))
+         (height-ratio (if (>= display-aspect (/ 16.0 9)) 1.0 0.85))
+         (height (floor (/ (* max-frame-height height-ratio) (frame-char-height))))
+         (top (nth 1 (frame-monitor-attribute 'workarea)))
+         (line-width const:init:line-width)
+         (pixel-width (proc:init:calc-frame-pixel-width line-width))
+         (left (if (>= display-aspect (/ 16.0 9))
+                   const:init:left-pixel (- (display-pixel-width) pixel-width))))
+    (setq-default initial-frame-alist
+                  (list (cons 'top top)
+                        (cons 'left left)
+                        (cons 'height height)
+                        (cons 'width line-width)))))
+
+(cond ((equal system-type 'darwin))
       ((equal system-type 'gnu/linux)
-       (set-face-attribute 'default nil
-                           :family "Myrica M"
-                           :height 120)
-       (setq initial-frame-alist
-             '((top . 35)
-               (left . 120)
-               (height . 58)
-               (width . 90)))
        (when (require 'mozc nil t)
          (setq default-input-method "japanese-mozc")
          (global-set-key
@@ -37,14 +82,6 @@
              (toggle-input-method)))
          (advice-add 'mozc-handle-event :before 'advice:mozc-handle-event-muhenkan)))
       ((equal system-type 'windows-nt)
-       (set-face-attribute 'default nil
-                           :family "Myrica M"
-                           :height 120)
-       (setq initial-frame-alist
-             '((top . 0)
-               (left . 120)
-               (height . 62)
-               (width . 90)))
        (setq w32-pipe-read-delay 0)))
 ; (frame-parameters (selected-frame))
 
@@ -71,7 +108,8 @@
                           (if (bolp)
                               (back-to-indentation) (beginning-of-line))))
 
-;; Theme
+;; Appearance
+(setq-default cursor-type 'bar)
 (load-theme 'deeper-blue t)
 (set-face-attribute 'show-paren-match nil
                     :background "#400000")
@@ -103,9 +141,6 @@
    0.04 nil (lambda () (set-face-background 'mode-line var:active-mode-line-color))))
 (setq ring-bell-function 'hook:change-mode-line-color-ring-bell)
 
-;; View
-(tool-bar-mode 0)
-(unless (eq window-system 'ns) (menu-bar-mode 0))
 (line-number-mode t)
 (column-number-mode t)
 (global-linum-mode t)
